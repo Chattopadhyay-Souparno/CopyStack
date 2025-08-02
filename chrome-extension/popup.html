@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CopyStack - Clipboard History</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 380px;
+      min-height: 500px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #fafafa;
+      color: #1a1a1a;
+      transition: all 0.3s ease;
+    }
+
+    body.dark {
+      background: #0f0f0f;
+      color: #f0f0f0;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+      padding: 20px;
+      color: white;
+      text-align: center;
+      border-radius: 0 0 12px 12px;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .tabs {
+      display: flex;
+      margin: 0 20px 20px 20px;
+      background: #f0f0f0;
+      border-radius: 8px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    body.dark .tabs {
+      background: #1a1a1a;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 8px 12px;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #666;
+    }
+
+    body.dark .tab {
+      color: #999;
+    }
+
+    .tab.active {
+      background: white;
+      color: #1a1a1a;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark .tab.active {
+      background: #2a2a2a;
+      color: #f0f0f0;
+    }
+
+    .tab-content {
+      padding: 0 20px 20px 20px;
+    }
+
+    .search-container {
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .search-container.show {
+      display: block;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    body.dark .search-input {
+      background: #1a1a1a;
+      border-color: #333;
+      color: #f0f0f0;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #2a2a2a;
+      box-shadow: 0 0 0 3px rgba(42, 42, 42, 0.1);
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      background: white;
+      color: #1a1a1a;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    body.dark .btn {
+      background: #1a1a1a;
+      border-color: #333;
+      color: #f0f0f0;
+    }
+
+    .btn:hover {
+      background: #f5f5f5;
+      border-color: #d0d0d0;
+      transform: translateY(-1px);
+    }
+
+    body.dark .btn:hover {
+      background: #2a2a2a;
+      border-color: #444;
+    }
+
+    .btn.primary {
+      background: #2a2a2a;
+      color: white;
+      border-color: #2a2a2a;
+    }
+
+    .btn.primary:hover {
+      background: #1a1a1a;
+      transform: translateY(-1px);
+    }
+
+    .btn.danger {
+      background: #dc2626;
+      color: white;
+      border-color: #dc2626;
+    }
+
+    .btn.danger:hover {
+      background: #b91c1c;
+    }
+
+    .clipboard-list {
+      max-height: 320px;
+      overflow-y: auto;
+      margin-top: 16px;
+    }
+
+    .clipboard-item {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+      transition: all 0.2s ease;
+    }
+
+    body.dark .clipboard-item {
+      background: #1a1a1a;
+      border-color: #333;
+    }
+
+    .clipboard-item:hover {
+      border-color: #2a2a2a;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .clipboard-text {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #333;
+      word-break: break-all;
+      margin-bottom: 8px;
+      max-height: 60px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body.dark .clipboard-text {
+      color: #d0d0d0;
+    }
+
+    .clipboard-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .clipboard-meta {
+      font-size: 10px;
+      color: #666;
+    }
+
+    body.dark .clipboard-meta {
+      color: #999;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      padding: 4px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-btn:hover {
+      background: #f0f0f0;
+    }
+
+    body.dark .icon-btn:hover {
+      background: #2a2a2a;
+    }
+
+    .pro-section {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .pro-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+      background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+
+    .license-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      text-align: center;
+      font-family: monospace;
+    }
+
+    body.dark .license-input {
+      background: #1a1a1a;
+      border-color: #333;
+      color: #f0f0f0;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+
+    body.dark .empty-state {
+      color: #999;
+    }
+
+    .export-buttons {
+      display: none;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .export-buttons.show {
+      display: flex;
+    }
+
+    .dark-toggle {
+      display: none;
+    }
+
+    .dark-toggle.show {
+      display: block;
+    }
+
+    /* Scrollbar */
+    .clipboard-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .clipboard-list::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+
+    body.dark .clipboard-list::-webkit-scrollbar-track {
+      background: #2a2a2a;
+    }
+
+    .clipboard-list::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 3px;
+    }
+
+    body.dark .clipboard-list::-webkit-scrollbar-thumb {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📋 CopyStack</h1>
+    <p>Clipboard History Manager</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="history">History</button>
+    <button class="tab" data-tab="pro">Pro Features</button>
+  </div>
+
+  <div class="tab-content" id="history-tab">
+    <div class="search-container" id="search-container">
+      <input type="text" class="search-input" id="search-input" placeholder="Search clipboard history...">
+    </div>
+
+    <div class="controls">
+      <button class="btn danger" id="clear-all">Clear All</button>
+      <div class="export-buttons" id="export-buttons">
+        <button class="btn" id="export-md">📋 Markdown</button>
+        <button class="btn" id="export-csv">📋 CSV</button>
+        <button class="btn" id="export-json">📋 JSON</button>
+      </div>
+      <button class="btn dark-toggle" id="dark-toggle">🌙 Dark Mode</button>
+    </div>
+
+    <div class="clipboard-list" id="clipboard-list">
+      <div class="empty-state" id="empty-state">
+        <p>No clipboard history yet.</p>
+        <p style="font-size: 12px; margin-top: 8px; opacity: 0.7;">Copy some text to get started!</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="pro-tab" style="display: none;">
+    <div class="pro-section">
+      <div class="pro-icon">⭐</div>
+      <h3 style="margin-bottom: 8px;">Unlock Pro Features</h3>
+      <p style="font-size: 12px; color: #666; margin-bottom: 20px;">
+        Get real-time search, export options, and dark mode
+      </p>
+      
+      <input type="text" class="license-input" id="license-input" placeholder="Enter license key">
+      <button class="btn primary" id="unlock-btn" style="width: 100%;">🔓 Unlock Pro</button>
+      
+      <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+        <h4 style="margin-bottom: 12px; font-size: 14px;">Pro Features Include:</h4>
+        <ul style="text-align: left; font-size: 12px; color: #666; line-height: 1.6;">
+          <li>🔍 Real-time search through history</li>
+          <li>📁 Export to Markdown, CSV, JSON</li>
+          <li>🌙 Dark mode toggle</li>
+          <li>🏷️ Tag and organize entries</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
