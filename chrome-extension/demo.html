@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CopyStack Demo - Chrome Extension Preview</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    .demo-container {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .demo-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #1a1a1a;
+    }
+
+    .demo-subtitle {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .extension-preview {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      padding: 0;
+      width: 380px;
+      margin: 0 auto 40px auto;
+      overflow: hidden;
+    }
+
+    .demo-note {
+      background: #f0f9ff;
+      border: 1px solid #0ea5e9;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      font-size: 14px;
+      color: #0c4a6e;
+    }
+
+    .feature-list {
+      text-align: left;
+      margin: 20px 0;
+    }
+
+    .feature-list h3 {
+      margin-bottom: 12px;
+      color: #1a1a1a;
+    }
+
+    .feature-list ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .feature-list li {
+      padding: 8px 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .feature-list li::before {
+      content: "✓ ";
+      color: #22c55e;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .installation-steps {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin: 30px 0;
+      text-align: left;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    }
+
+    .installation-steps h3 {
+      margin-top: 0;
+      color: #1a1a1a;
+    }
+
+    .installation-steps ol {
+      margin: 16px 0;
+      padding-left: 20px;
+    }
+
+    .installation-steps li {
+      margin: 8px 0;
+      font-size: 14px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .license-key {
+      background: #1a1a1a;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      margin: 16px 0;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <h1 class="demo-title">📋 CopyStack</h1>
+    <p class="demo-subtitle">Clipboard History Manager Chrome Extension</p>
+
+    <div class="extension-preview">
+      <iframe src="popup.html" width="380" height="500" frameborder="0"></iframe>
+    </div>
+
+    <div class="demo-note">
+      <strong>📖 Demo Note:</strong> This is a preview of the Chrome extension popup. In actual use, this would appear when clicking the extension icon in Chrome's toolbar.
+    </div>
+
+    <div class="installation-steps">
+      <h3>🚀 How to Install</h3>
+      <ol>
+        <li>Download or clone the extension files to your computer</li>
+        <li>Open Chrome and navigate to <code>chrome://extensions/</code></li>
+        <li>Enable "Developer mode" in the top right corner</li>
+        <li>Click "Load unpacked" and select the extension folder</li>
+        <li>The CopyStack icon will appear in your browser toolbar</li>
+      </ol>
+      
+      <h3>🔓 Pro Features License Key</h3>
+      <div class="license-key">COPYSTACK-PRO-2025</div>
+      <p>Use this key in the "Pro Features" tab to unlock advanced functionality.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 30px 0;">
+      <div class="feature-list">
+        <h3>✅ Free Features</h3>
+        <ul>
+          <li>Track up to 100 clipboard entries</li>
+          <li>Copy and delete individual entries</li>
+          <li>Clear all history</li>
+          <li>Automatic duplicate prevention</li>
+          <li>Modern UI with monospace font</li>
+          <li>Works on all websites</li>
+        </ul>
+      </div>
+
+      <div class="feature-list">
+        <h3>⭐ Pro Features</h3>
+        <ul>
+          <li>Real-time search through history</li>
+          <li>Export to Markdown format</li>
+          <li>Export to CSV format</li>
+          <li>Export to JSON format</li>
+          <li>Dark mode toggle</li>
+          <li>Enhanced organization</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="demo-note">
+      <strong>🔒 Privacy First:</strong> All clipboard data is stored locally in your browser. No data is sent to external servers or tracked in any way.
+    </div>
+
+  </div>
+</body>
+</html>
